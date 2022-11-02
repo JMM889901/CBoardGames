@@ -63,23 +63,23 @@ returns 0 for a failed move
 returns 1 for a successful move
 returns 2 for a winning move 
 */
-char MakeMove(struct gameState state,int x,int y)
+char MakeMove(struct gameState* state,int x,int y)
 {
-    if(x < 0 || y < 0 || state.board[x][y] != 0){
+    if(x < 0 || y < 0 || state->board[x][y] != 0){
         return 0;
     }
-    if(y > 0 && (state.board[x][y-1] == 0 ) )
+    if(y > 0 && (state->board[x][y-1] == 0 ) )
     {
         return 0;
     }
-    if(y >= state.y || x >= state.x)
+    if(y >= state->y || x >= state->x)
     {
         return 0;
     }
-    state.board[x][y] = state.currentPlayer;
-    if(moveDoesWin(x,y,state))
+    state->board[x][y] = state->currentPlayer;
+    if(moveDoesWin(x,y,*state))
     {
-        state.winner = state.currentPlayer;
+        state->winner = state->currentPlayer;
         return 2;
     }
     return 1;
@@ -90,7 +90,7 @@ returns 1 for wins
 */
 int moveDoesWin(int x, int y, struct gameState state)
 {
-    int requirement = 4;
+    int requirement = 4; //make this an arg
     int num; //How many unbroken
     //Does this win up/down
 
@@ -142,7 +142,6 @@ int moveDoesWin(int x, int y, struct gameState state)
             num = 0;
         }
     }
-
     //Does win up-left diag
     num = 0;
     Smaller = min(x, min(y, requirement));
@@ -153,7 +152,7 @@ int moveDoesWin(int x, int y, struct gameState state)
     Upper = Smaller + min(state.x - x, state.y - y);
     for(int i = 0; i < Upper ; i++)
     {
-        if(state.board[state.x - (offsetX+i)][offsetY+i] == state.currentPlayer)
+        if(state.board[state.x - (offsetX+i) - 1][offsetY+i] == state.currentPlayer)
         {
             num++;
             if(num >= requirement)
@@ -162,7 +161,6 @@ int moveDoesWin(int x, int y, struct gameState state)
             num = 0;
         }
     }
-
     return 0;
 
 }
@@ -191,13 +189,13 @@ int main(int argc, char *argv[])
     }
     else
     {
-        printf("Enter Y size");
+        printf("Enter Y size ");
         scanf("%d", &y);
     };
     struct gameState game = createGameState(x, y);
 
-
+    MakeMove(&game, 0, 0);
 
     printf("hi");
-    printf("%d\n", game.board[1][1]);
+    printf("%d\n", game.board[0][0]);
 };
